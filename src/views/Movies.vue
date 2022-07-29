@@ -68,12 +68,21 @@
 
     <div class="container mt-5" v-if="currentFormat === 'card-format'">
       <div class="row" id="data-panel">
-        <div
-          v-for="movie in movies"
-          :key="movie.id"
-          class="col-6 col-md-4 col-lg-3 col-xl-2"
-        >
+        <!-- 這部分抽出來改寫成component
+        例如
+        <MovieCard
+          v-for="item in movies"
+          :key="item.id"
+          :data="item"
+          @show-detail="..."
+        />
+        內部有些判斷可以搬到computed -->
+        <div v-for="movie in movies" :key="movie.id" class="col-6 col-md-4 col-lg-3 col-xl-2">
           <div class="card mb-2">
+            <!-- 
+              抽成component後改由computed判斷
+              字串處理用template literals 
+            -->
             <img
               class="card-img-top"
               :src="
@@ -272,6 +281,7 @@
 <script>
 import axios from "axios";
 
+// 沒有api可以取得的常態性資料，可以抽成json或js再import進來
 const genres = [
   { id: 28, name: "Action", chineseName: "動作" },
   { id: 12, name: "Adventure", chineseName: "冒險" },
@@ -294,6 +304,7 @@ const genres = [
   { id: 37, name: "Western", chineseName: "西方" },
 ];
 
+// apiKey這種機密資訊放到.env中
 const apiKey = "70c1033d4e5a041d7597a7d9758e86a6";
 const BASE_URL = "https://api.themoviedb.org/3/";
 
@@ -327,12 +338,13 @@ export default {
         this.filterMoviesByMovieName(this.keyword, pageNum);
       }
     },
-
+    // initilaizeYears可以搬到computed, theLastYear放到data
     initilaizeYears(theLastYear) {
       for (let year = 2022; year >= theLastYear; year--) {
         this.years.push(year);
       }
     },
+    // changeYear和changeGenre兩者非常相似，是否可以簡化？
     changeYear(e) {
       this.filterType = "byYearAndGenre";
       this.currentPage = 1;
@@ -349,6 +361,8 @@ export default {
       console.log({ page, year, genre });
       axios
         .get(
+          // use query params
+          // https://axios-http.com/docs/example
           `${BASE_URL}discover/movie?api_key=${apiKey}&sort_by=popularity.desc&include_video=false&page=${page}&primary_release_year=${year}&with_genres=${genre}`
         )
         .then((response) => {
@@ -363,6 +377,7 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    // 和上面很像，嘗試合併/簡化
     filterMoviesByMovieName(movieName, page) {
       // console.log({ movieName, page });
       this.filterType = "byMovieName";
@@ -399,6 +414,7 @@ export default {
 </script>
 
 <style scoped>
+/* 嘗試SCSS和BEM */
 /* header */
 select,
 option {
