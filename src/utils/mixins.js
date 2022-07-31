@@ -1,13 +1,12 @@
 import axios from "axios";
 
-const apiKey = "70c1033d4e5a041d7597a7d9758e86a6";
 const BASE_URL = "https://api.themoviedb.org/3/";
 
 export const clickMoreMethod = {
   methods: {
     clickMore(item) {
       axios
-        .get(`${BASE_URL}movie/${item.id}?api_key=${apiKey}`)
+        .get(`${BASE_URL}movie/${item.id}?api_key=${process.env.VUE_APP_apiKey}`)
         .then((response) => {
           const { data } = response;
           this.$emit("after-click-more", data);

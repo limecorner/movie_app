@@ -60,6 +60,7 @@ export default {
 }
 
 .card-body {
+  padding: 10px 0;
   background-color: black;
 }
 .card-body h5 {

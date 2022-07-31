@@ -26,7 +26,7 @@
         >
           <option value="" selected>類型</option>
           <option v-for="genre in genres" :key="genre.id" :value="genre.id">
-            {{ genre.chineseName }}
+            {{ genre.name }}
           </option>
         </select>
         <div class="col-6 col-md-4 col-lg-4">
@@ -126,29 +126,6 @@ import MovieCard from "./../components/MovieCard.vue";
 import MovieList from "./../components/MovieList.vue";
 import MovieModal from "./../components/MovieModal.vue";
 
-const genres = [
-  { id: 28, name: "Action", chineseName: "動作" },
-  { id: 12, name: "Adventure", chineseName: "冒險" },
-  { id: 16, name: "Animation", chineseName: "動畫" },
-  { id: 35, name: "Comedy", chineseName: "喜劇" },
-  { id: 80, name: "Crime", chineseName: "犯罪" },
-  { id: 99, name: "Documentary", chineseName: "紀錄片" },
-  { id: 18, name: "Drama", chineseName: "戲劇" },
-  { id: 10751, name: "Family", chineseName: "家庭" },
-  { id: 14, name: "Fantasy", chineseName: "奇幻" },
-  { id: 36, name: "History", chineseName: "歷史" },
-  { id: 27, name: "Horror", chineseName: "恐怖" },
-  { id: 10402, name: "Music", chineseName: "音樂" },
-  { id: 9648, name: "Mystery", chineseName: "靈異" },
-  { id: 10749, name: "Romance", chineseName: "愛情" },
-  { id: 878, name: "Science Fiction", chineseName: "科幻" },
-  { id: 10770, name: "TV Movie", chineseName: "電視電影" },
-  { id: 53, name: "Thriller", chineseName: "驚悚" },
-  { id: 10752, name: "War", chineseName: "戰爭" },
-  { id: 37, name: "Western", chineseName: "西方" },
-];
-
-const apiKey = "70c1033d4e5a041d7597a7d9758e86a6";
 const BASE_URL = "https://api.themoviedb.org/3/";
 
 export default {
@@ -174,10 +151,24 @@ export default {
   },
   created() {
     this.initilaizeYears(2010);
-    this.genres = genres;
+    this.getGenres();
     this.filterMovies(1, this.year, this.genreId);
   },
   methods: {
+    getGenres() {
+      axios
+        .get(`${BASE_URL}genre/movie/list`, {
+          params: {
+            api_key: process.env.VUE_APP_apiKey,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          const { data } = response;
+          this.genres = data.genres;
+        })
+        .catch((error) => console.log(error));
+    },
     clickCallback(pageNum) {
       console.log(pageNum);
       this.currentPage = pageNum;
@@ -202,17 +193,17 @@ export default {
       this.currentPage = 1;
       this.filterMovies(this.currentPage, this.year, this.genreId);
     },
-    filterMovies(page, year, genre) {
-      console.log({ page, year, genre });
+    filterMovies(page, year, genreId) {
+      console.log({ page, year, genreId });
       axios
         .get(`${BASE_URL}discover/movie`, {
           params: {
-            api_key: apiKey,
+            api_key: process.env.VUE_APP_apiKey,
             sort_by: "popularity.desc",
             include_video: false,
             page,
             primary_release_year: year,
-            with_genres: genre,
+            with_genres: genreId,
           },
         })
         .then((response) => {
@@ -236,7 +227,7 @@ export default {
       axios
         .get(`${BASE_URL}search/movie`, {
           params: {
-            api_key: apiKey,
+            api_key: process.env.VUE_APP_apiKey,
             query: movieName,
             page,
           },
@@ -300,25 +291,6 @@ option {
 
 tr {
   padding: 10px 0;
-}
-
-/* modal */
-.modal-content {
-  background-color: #000;
-  color: white;
-}
-
-#show-movie-image {
-  width: 100%;
-}
-
-.modal-title {
-  font-weight: 900;
-}
-
-.overview-title {
-  font-size: 24px;
-  font-weight: 800;
 }
 
 /* pagination */
