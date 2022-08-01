@@ -78,8 +78,11 @@
     <!-- list-format -->
     <div class="container mt-5" v-else>
       <div class="list-table row align-items-center">
-        <tr class="col-5">
+        <tr class="col-4">
           Name
+        </tr>
+        <tr class="col-1">
+          <font-awesome-icon icon="fa-solid fa-heart" />
         </tr>
         <tr class="col-3">
           <font-awesome-icon icon="fa-solid fa-star" />
@@ -163,7 +166,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response);
           const { data } = response;
           this.genres = data.genres;
         })
