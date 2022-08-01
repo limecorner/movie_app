@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import NotFound from '../views/NotFound.vue'
 import Movies from '../views/Movies.vue'
+import FavoriteMovies from '../views/FavoriteMovies.vue'
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ const routes = [
     path: '/movies',
     name: 'movies',
     component: Movies,
+  },
+  {
+    path: '/favorite/movies',
+    name: 'favorite-movies',
+    component: FavoriteMovies,
   },
   {
     path: '*',

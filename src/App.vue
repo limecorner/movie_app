@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <!-- <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav> -->
+    <nav class="mt-3">
+      <router-link class="tab mr-3" to="/movies">Home</router-link>
+      <router-link class="tab" to="/favorite/movies">Favorite</router-link>
+    </nav>
     <router-view />
   </div>
 </template>
@@ -18,6 +18,21 @@ html {
   text-align: center;
   background-color: black;
   color: white;
+}
+
+.tab {
+  padding: 5px 10px;
+  border: solid 2px white;
+  border-radius: 5px;
+  color: white;
+  font-size: 24px;
+}
+.tab:hover {
+  text-decoration: none;
+  color: #87ceeb;
+}
+.router-link-active {
+  color: #87ceeb;
 }
 </style>
 
