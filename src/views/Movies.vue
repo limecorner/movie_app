@@ -85,10 +85,10 @@
           <font-awesome-icon icon="fa-solid fa-heart" />
         </tr>
         <tr class="col-3">
-          <font-awesome-icon icon="fa-solid fa-star" />
+          <font-awesome-icon icon="fa-solid fa-ranking-star" />
         </tr>
         <tr class="col-2">
-          <font-awesome-icon icon="fa-solid fa-thumbs-up" />
+          <font-awesome-icon icon="fa-solid fa-star" />
         </tr>
         <tr class="col-2">
           More

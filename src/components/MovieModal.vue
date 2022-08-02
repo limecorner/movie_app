@@ -30,11 +30,11 @@
               <div class="row mt-3">
                 <div class="col-4">
                   <div class="text-center">
-                    <font-awesome-icon icon="fa-solid fa-star" />
+                    <font-awesome-icon icon="fa-solid fa-ranking-star" />
                     {{ getPopularity }}
                   </div>
                   <div class="text-center">
-                    <font-awesome-icon icon="fa-solid fa-thumbs-up" />
+                    <font-awesome-icon icon="fa-solid fa-star" />
                     {{ getVote }}
                   </div>
                 </div>

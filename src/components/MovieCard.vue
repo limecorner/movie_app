@@ -19,11 +19,11 @@
       <div class="card-footer d-flex justify-content-between">
         <div>
           <div class="text-left">
-            <font-awesome-icon icon="fa-solid fa-star" />
+            <font-awesome-icon icon="fa-solid fa-ranking-star" />
             {{ getPopularity }}
           </div>
           <div class="text-left">
-            <font-awesome-icon icon="fa-solid fa-thumbs-up" />
+            <font-awesome-icon icon="fa-solid fa-star" />
             {{ getVote }}
           </div>
         </div>
