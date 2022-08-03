@@ -71,6 +71,8 @@
           :key="movie.id"
           :item="movie"
           @after-click-more="afterClickMore"
+          :current-rated-movie="currentRatedMovie"
+          @after-on-rate-style="afterOnRateStyle"
         />
       </div>
     </div>
@@ -150,6 +152,7 @@ export default {
       currentFormat: "card-format",
       keyword: "",
       filterType: "byYearAndGenre",
+      currentRatedMovie: { id: -1 },
     };
   },
   created() {
@@ -250,6 +253,9 @@ export default {
     changeFormat(format) {
       this.currentFormat = format;
       console.log(this.currentFormat);
+    },
+    afterOnRateStyle(itemId) {
+      this.currentRatedMovie = { id: itemId };
     },
   },
 };

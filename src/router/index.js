@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import NotFound from '../views/NotFound.vue'
 import Movies from '../views/Movies.vue'
 import FavoriteMovies from '../views/FavoriteMovies.vue'
+import RatedMovies from '../views/RatedMovies.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes = [
     path: '/favorite/movies',
     name: 'favorite-movies',
     component: FavoriteMovies,
+  },
+  {
+    path: '/rated/movies',
+    name: 'rated-movies',
+    component: RatedMovies,
   },
   {
     path: '*',

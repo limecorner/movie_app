@@ -2,7 +2,8 @@
   <div id="app">
     <nav class="mt-3">
       <router-link class="tab mr-3" to="/movies">Home</router-link>
-      <router-link class="tab" to="/favorite/movies">Favorite</router-link>
+      <router-link class="tab mr-3" to="/favorite/movies">Favorite</router-link>
+      <router-link class="tab" to="/rated/movies">Rated</router-link>
     </nav>
     <router-view />
   </div>

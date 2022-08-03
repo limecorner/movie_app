@@ -13,7 +13,6 @@
       </div>
     </div>
 
-    <!-- Modal -->
     <MovieModal :item="item" />
   </div>
 </template>
@@ -41,21 +40,20 @@ export default {
     };
   },
   created() {
-    this.getFavoriteMovies();
+    this.getRatedMovies();
   },
   methods: {
-    getFavoriteMovies() {
+    getRatedMovies() {
+      const path = `${BASE_URL}account/${process.env.VUE_APP_account_id}/rated/movies`;
+      const config = {
+        params: {
+          api_key: process.env.VUE_APP_apiKey,
+          session_id: process.env.VUE_APP_session_id,
+          sort_by: "created_at.desc",
+        },
+      };
       axios
-        .get(
-          `${BASE_URL}account/${process.env.VUE_APP_account_id}/favorite/movies`,
-          {
-            params: {
-              api_key: process.env.VUE_APP_apiKey,
-              session_id: process.env.VUE_APP_session_id,
-              sort_by: "created_at.desc",
-            },
-          }
-        )
+        .get(path, config)
         .then((response) => {
           const { data } = response;
           this.movies = data.results;

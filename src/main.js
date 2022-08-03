@@ -10,6 +10,8 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+
 import Paginate from 'vuejs-paginate'
 import VueRouter from 'vue-router'
 const originalPush = VueRouter.prototype.push
@@ -23,7 +25,7 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 /* add icons to the library */
-library.add(fas)
+library.add(fas, far)
 
 
 /* add font awesome icon component */
