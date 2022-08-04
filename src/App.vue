@@ -1,9 +1,20 @@
 <template>
   <div id="app">
-    <nav class="mt-3">
-      <router-link class="tab mr-3" to="/movies">Home</router-link>
-      <router-link class="tab mr-3" to="/favorite/movies">Favorite</router-link>
-      <router-link class="tab" to="/rated/movies">Rated</router-link>
+    <nav class="nav-container mt-4">
+      <div class="row">
+        <div class="col-3">
+          <h5 class="web-title">速查電影</h5>
+        </div>
+        <div class="col-3">
+          <router-link class="tab" to="/movies">Home</router-link>
+        </div>
+        <div class="col-3">
+          <router-link class="tab" to="/favorite/movies">Favorite</router-link>
+        </div>
+        <div class="col-3">
+          <router-link class="tab" to="/rated/movies">Rated</router-link>
+        </div>
+      </div>
     </nav>
     <router-view />
   </div>
@@ -20,13 +31,20 @@ html {
   background-color: black;
   color: white;
 }
-
+.nav-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.web-title {
+  font-size: 18px;
+}
 .tab {
   padding: 5px 10px;
   border: solid 2px white;
   border-radius: 5px;
   color: white;
-  font-size: 24px;
+  font-size: 18px;
 }
 .tab:hover {
   text-decoration: none;
@@ -34,6 +52,15 @@ html {
 }
 .router-link-active {
   color: #87ceeb;
+}
+
+@media screen and (min-width: 576px) {
+  .web-title {
+    font-size: 22px;
+  }
+  .tab {
+    font-size: 24px;
+  }
 }
 </style>
 

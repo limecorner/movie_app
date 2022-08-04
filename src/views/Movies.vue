@@ -1,35 +1,24 @@
 <template>
   <div>
     <div class="container mt-3">
-      <div class="row">
-        <div
-          class="
-            col-4 col-md-2 col-lg-2
-            d-flex
-            align-items-center
-            justify-content-center
-          "
-        >
-          <h5 class="web-title">速查電影</h5>
-        </div>
-        <div class="col-4">
-          <select id="year-area" class="w-100" @change="changeQuery($event)">
+      <div class="select-wrapper row">
+        <div class="col-12 col-sm-6 col-md-4">
+          <select id="year-area" @change="changeQuery($event)">
             <option value="" selected>年份</option>
             <option v-for="year in years" :key="year" :value="year">
               {{ year }}
             </option>
           </select>
         </div>
-        <div class="col-4">
-          <select id="genre-area" class="w-100" @change="changeQuery($event)">
+        <div class="col-12 col-sm-6 col-md-4">
+          <select id="genre-area" @change="changeQuery($event)">
             <option value="" selected>類型</option>
             <option v-for="genre in genres" :key="genre.id" :value="genre.id">
               {{ genre.name }}
             </option>
           </select>
         </div>
-
-        <div class="col-6 col-md-4 col-lg-4">
+        <div class="col-12 col-sm-8 col-md-4 d-flex justify-content-center">
           <form id="search-form" class="d-flex">
             <input
               id="search-input"
@@ -48,13 +37,31 @@
             </button>
           </form>
         </div>
-        <div id="control-form" class="d-flex col-4 col-md-1 col-lg-1">
+        <div
+          class="
+            icon-wrapper
+            col-6 col-sm-2
+            d-flex
+            align-items-center
+            justify-content-center
+          "
+        >
           <font-awesome-icon
             class="mr-3"
             icon="fa-solid fa-grip"
             size="2x"
             @click="changeFormat('card-format')"
           />
+        </div>
+        <div
+          class="
+            icon-wrapper
+            col-6 col-sm-2
+            d-flex
+            align-items-center
+            justify-content-center
+          "
+        >
           <font-awesome-icon
             icon="fa-solid fa-list"
             size="2x"
@@ -63,6 +70,7 @@
         </div>
       </div>
     </div>
+
     <div v-if="isLoading" class="spinner-wrapper">
       <breeding-rhombus-spinner
         :animation-duration="1000"
@@ -290,12 +298,26 @@ export default {
   height: 90vh;
 }
 
+.select-wrapper {
+  position: relative;
+}
+
 /* header */
 select,
 option {
   padding: 5px 10px;
   text-align: center;
   border-radius: 5px;
+}
+#year-area,
+#genre-area,
+#search-form {
+  width: 80%;
+  margin-bottom: 10px;
+}
+
+#search-form {
+  /* width: 90%; */
 }
 
 .fa-solid {
@@ -335,7 +357,7 @@ tr {
   margin-top: 20px;
   /* width: 500px; */
 }
-@media screen and (min-width: 350px) {
+@media screen and (min-width: 576px) {
   #search-form,
   #control-form {
     margin-top: 15px;
@@ -346,6 +368,32 @@ tr {
   #search-form,
   #control-form {
     margin-top: 0px;
+  }
+  #year-area,
+  #genre-area {
+    width: 100%;
+  }
+  .icon-wrapper {
+    position: static;
+  }
+  .fa-grip,
+  .fa-list {
+    position: absolute;
+  }
+  .fa-grip {
+    top: -50px;
+    right: -35px;
+  }
+  .fa-list {
+    top: -10px;
+    right: -20px;
+  }
+  @media screen and (min-width: 768px) {
+    #year-area,
+    #genre-area,
+    #search-form {
+      width: 80%;
+    }
   }
 }
 </style>

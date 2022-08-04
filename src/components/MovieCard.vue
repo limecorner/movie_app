@@ -92,7 +92,6 @@ export default {
       isFavorite: false,
       rateInStar: -1,
       isRated: false,
-      boundRating: 0,
     };
   },
   created() {
