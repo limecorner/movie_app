@@ -8,6 +8,6 @@ npm run build
 cd dist
 git init
 git add -A
-git commit -m 'deploy'
+git commit -m 'deploy : 加入 Spinner'
 
-git push https://github.com/limecorner/movie_app.git master:v8_rate-by-number
+git push https://github.com/limecorner/movie_app.git master:v9_add-spinner

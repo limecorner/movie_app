@@ -5,54 +5,38 @@
       <div class="card-body movie-item-body">
         <h5>{{ getTitle }}</h5>
         <div class="container">
-          <div class="row">
-            <div class="col-1" v-if="isFavorite">
-              <font-awesome-icon
-                @click="onToggleFavorite(item)"
-                icon="fa-solid fa-heart"
-                class="favorite"
-              />
-            </div>
-            <div class="col-1" v-else>
-              <font-awesome-icon
-                @click="onToggleFavorite(item)"
-                icon="fa-solid fa-heart"
-              />
-            </div>
+          <div class="d-flex justify-content-around align-items-center">
+            <font-awesome-icon
+              v-if="isFavorite"
+              @click="onToggleFavorite(item)"
+              icon="fa-solid fa-heart"
+              class="favorite"
+            />
+            <font-awesome-icon
+              v-else
+              @click="onToggleFavorite(item)"
+              icon="fa-solid fa-heart"
+            />
 
             <!-- rate -->
-            <div class="col-1" v-if="isRated">
-              <font-awesome-icon
-                icon="fa-solid fa-star"
-                class="rate-star rated"
-                @click="deleteRate(item)"
-              />
-            </div>
-            <div class="col-1" v-else>
-              <font-awesome-icon
-                icon="fa-regular fa-star"
-                class="rate-star"
-                @click="onRateStyle(item)"
-              />
-            </div>
-            <div class="col-8 col-lg-7">
-              <div
-                :class="{ rating: currentRatedMovie.id === item.id }"
-                class="rate-text"
-              >
-                {{ rate > 0 ? rate : "評個分吧!" }}
-              </div>
-              <input
-                :class="{ rating: currentRatedMovie.id === item.id }"
-                v-rate-focus="currentRatedMovie.id === item.id"
-                @keyup.esc="removeRateStyle"
-                @blur="removeRateStyle"
-                @keyup.enter="rateMovie(item)"
-                class="rate-area"
-                v-model="rate"
-                type="text"
-              />
-            </div>
+            <font-awesome-icon
+              v-if="isRated"
+              icon="fa-solid fa-star"
+              class="rate-star rated"
+              @click="deleteRate(item)"
+            />
+            <font-awesome-icon v-else icon="fa-regular fa-star" />
+            <star-rating
+              class="pb-1"
+              v-model="rateInStar"
+              @rating-selected="setRating"
+              :increment="0.5"
+              :star-size="15"
+              active-color="#f28500"
+              :show-rating="false"
+              :inline="true"
+            ></star-rating
+            >{{ rateInStar > 0 ? rateInStar * 2 : "" }}
           </div>
         </div>
       </div>
@@ -85,6 +69,7 @@
 import axios from "axios";
 import { clickMoreMethod, getInfoMixins } from "./../utils/mixins";
 import { Toast } from "../utils/helpers";
+import StarRating from "vue-star-rating";
 const BASE_URL = "https://api.themoviedb.org/3/";
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -92,13 +77,12 @@ const axiosInstance = axios.create({
 });
 
 export default {
+  components: {
+    StarRating,
+  },
   mixins: [clickMoreMethod, getInfoMixins],
   props: {
     item: {
-      type: Object,
-      required: true,
-    },
-    currentRatedMovie: {
       type: Object,
       required: true,
     },
@@ -106,22 +90,13 @@ export default {
   data() {
     return {
       isFavorite: false,
-      rate: -1,
-      currentRate: -1,
-      rateLimitArray: [],
+      rateInStar: -1,
       isRated: false,
+      boundRating: 0,
     };
   },
   created() {
     this.getAccountStates(this.item);
-    this.initializeRateLimitArray();
-  },
-  directives: {
-    "rate-focus": function (el, binding) {
-      if (binding.value) {
-        el.focus();
-      }
-    },
   },
   methods: {
     onToggleFavorite(item) {
@@ -135,41 +110,34 @@ export default {
         .post(path, data)
         .then((response) => {
           this.isFavorite = data.favorite;
+          if (data.favorite) {
+            Toast.fire({
+              icon: "success",
+              title: "成功",
+              text: "加到最愛",
+              width: 200,
+            });
+          } else {
+            Toast.fire({
+              icon: "success",
+              title: "成功",
+              text: "移除最愛",
+              width: 200,
+            });
+          }
           console.log(response);
         })
         .catch((error) => console.log(error));
     },
-    initializeRateLimitArray() {
-      let i = 0.5;
-      while (i <= 10) {
-        this.rateLimitArray.push(i);
-        i += 0.5;
-      }
-    },
-    onRateStyle(item) {
-      this.$emit("after-on-rate-style", item.id);
-      this.currentRate = this.rate;
-    },
-    removeRateStyle() {
-      this.$emit("after-on-rate-style", -1);
-      this.rate = this.currentRate;
-      this.currentRate = -1;
+    setRating(rating) {
+      console.log("rating", rating);
+      this.rateInStar = rating;
+      this.rateMovie(this.item);
     },
     rateMovie(item) {
-      if (!this.rateLimitArray.includes(Number(this.rate))) {
-        Toast.fire({
-          icon: "warning",
-          title: "輸入數字需為",
-          text: "0.5, 1, 1.5,..., 9.5, 10 ",
-          width: 280,
-        });
-        return;
-      }
-
-      this.$emit("after-on-rate-style", -1);
       const path = `movie/${item.id}/rating`;
       const data = {
-        value: this.rate,
+        value: this.rateInStar * 2,
       };
       const config = {
         params: {
@@ -180,27 +148,27 @@ export default {
       axiosInstance
         .post(path, data, config)
         .then((response) => {
-          this.isRated = true;
-          this.rate = data.value;
           console.log(response);
+          this.isRated = true;
           Toast.fire({
             icon: "success",
-            title: "評分成功",
-            width: 200,
+            title: "成功",
+            text: "評分",
+            width: 170,
           });
         })
         .catch((error) => {
-          this.rate = this.currentRate;
           Toast.fire({
             icon: "error",
-            title: "輸入有誤",
-            // text: "0.5, 1, 1.5,..., 9.5, 10 ",
-            width: 280,
+            title: "失敗",
+            text: "評分",
+            width: 170,
           });
           console.log(error);
         });
     },
     deleteRate(item) {
+      this.rateInStar = 0;
       const path = `${BASE_URL}movie/${item.id}/rating`;
       const config = {
         params: {
@@ -213,8 +181,22 @@ export default {
         .then(() => {
           this.isRated = false;
           this.rate = -1;
+          Toast.fire({
+            icon: "success",
+            title: "成功",
+            text: "移除評分",
+            width: 200,
+          });
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          Toast.fire({
+            icon: "error",
+            title: "失敗",
+            text: "移除評分",
+            width: 200,
+          });
+          console.log(error);
+        });
     },
     getAccountStates(item) {
       const path = `${BASE_URL}movie/${item.id}/account_states`;
@@ -230,8 +212,9 @@ export default {
           const { data } = response;
           this.isFavorite = data.favorite;
           if (data.rated.value > 0) {
+            console.log(data.rated.value);
             this.isRated = true;
-            this.rate = data.rated.value;
+            this.rateInStar = data.rated.value / 2;
           }
         })
         .catch((error) => console.log(error));

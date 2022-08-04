@@ -12,23 +12,23 @@
         >
           <h5 class="web-title">速查電影</h5>
         </div>
+        <div class="col-4">
+          <select id="year-area" class="w-100" @change="changeQuery($event)">
+            <option value="" selected>年份</option>
+            <option v-for="year in years" :key="year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+        </div>
+        <div class="col-4">
+          <select id="genre-area" class="w-100" @change="changeQuery($event)">
+            <option value="" selected>類型</option>
+            <option v-for="genre in genres" :key="genre.id" :value="genre.id">
+              {{ genre.name }}
+            </option>
+          </select>
+        </div>
 
-        <select class="col-2 mr-1" id="year-area" @change="changeQuery($event)">
-          <option value="" selected>年份</option>
-          <option v-for="year in years" :key="year" :value="year">
-            {{ year }}
-          </option>
-        </select>
-        <select
-          class="col-2 mr-1"
-          id="genre-area"
-          @change="changeQuery($event)"
-        >
-          <option value="" selected>類型</option>
-          <option v-for="genre in genres" :key="genre.id" :value="genre.id">
-            {{ genre.name }}
-          </option>
-        </select>
         <div class="col-6 col-md-4 col-lg-4">
           <form id="search-form" class="d-flex">
             <input
@@ -63,46 +63,54 @@
         </div>
       </div>
     </div>
-    <!-- card-format -->
-    <div class="container mt-5" v-if="currentFormat === 'card-format'">
-      <div class="row" id="data-panel">
-        <MovieCard
+    <div v-if="isLoading" class="spinner-wrapper">
+      <breeding-rhombus-spinner
+        :animation-duration="1000"
+        :size="65"
+        color="#ff1d5e"
+      />
+    </div>
+
+    <template v-else>
+      <!-- card-format -->
+      <div class="container mt-5" v-if="currentFormat === 'card-format'">
+        <div class="row" id="data-panel">
+          <MovieCard
+            v-for="movie in movies"
+            :key="movie.id"
+            :item="movie"
+            @after-click-more="afterClickMore"
+          />
+        </div>
+      </div>
+
+      <!-- list-format -->
+      <div class="container mt-5" v-else>
+        <div class="list-table row align-items-center">
+          <tr class="col-4">
+            Name
+          </tr>
+          <tr class="col-1">
+            <font-awesome-icon icon="fa-solid fa-heart" />
+          </tr>
+          <tr class="col-3">
+            <font-awesome-icon icon="fa-solid fa-ranking-star" />
+          </tr>
+          <tr class="col-2">
+            <font-awesome-icon icon="fa-solid fa-star" />
+          </tr>
+          <tr class="col-2">
+            More
+          </tr>
+        </div>
+        <MovieList
           v-for="movie in movies"
           :key="movie.id"
           :item="movie"
           @after-click-more="afterClickMore"
-          :current-rated-movie="currentRatedMovie"
-          @after-on-rate-style="afterOnRateStyle"
         />
       </div>
-    </div>
-
-    <!-- list-format -->
-    <div class="container mt-5" v-else>
-      <div class="list-table row align-items-center">
-        <tr class="col-4">
-          Name
-        </tr>
-        <tr class="col-1">
-          <font-awesome-icon icon="fa-solid fa-heart" />
-        </tr>
-        <tr class="col-3">
-          <font-awesome-icon icon="fa-solid fa-ranking-star" />
-        </tr>
-        <tr class="col-2">
-          <font-awesome-icon icon="fa-solid fa-star" />
-        </tr>
-        <tr class="col-2">
-          More
-        </tr>
-      </div>
-      <MovieList
-        v-for="movie in movies"
-        :key="movie.id"
-        :item="movie"
-        @after-click-more="afterClickMore"
-      />
-    </div>
+    </template>
 
     <paginate
       :page-count="totalPages"
@@ -130,17 +138,20 @@ import axios from "axios";
 import MovieCard from "./../components/MovieCard.vue";
 import MovieList from "./../components/MovieList.vue";
 import MovieModal from "./../components/MovieModal.vue";
+import { BreedingRhombusSpinner } from "epic-spinners";
 
 const BASE_URL = "https://api.themoviedb.org/3/";
 
 export default {
   components: {
+    BreedingRhombusSpinner,
     MovieCard,
     MovieList,
     MovieModal,
   },
   data() {
     return {
+      isLoading: true,
       years: [],
       genres: [],
       year: "",
@@ -152,7 +163,6 @@ export default {
       currentFormat: "card-format",
       keyword: "",
       filterType: "byYearAndGenre",
-      currentRatedMovie: { id: -1 },
     };
   },
   created() {
@@ -162,6 +172,7 @@ export default {
   },
   methods: {
     getGenres() {
+      this.isLoading = true;
       axios
         .get(`${BASE_URL}genre/movie/list`, {
           params: {
@@ -169,10 +180,14 @@ export default {
           },
         })
         .then((response) => {
+          this.isLoading = false;
           const { data } = response;
           this.genres = data.genres;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          this.isLoading = false;
+          console.log(error);
+        });
     },
     clickCallback(pageNum) {
       console.log(pageNum);
@@ -199,6 +214,7 @@ export default {
       this.filterMovies(this.currentPage, this.year, this.genreId);
     },
     filterMovies(page, year, genreId) {
+      this.isLoading = true;
       console.log({ page, year, genreId });
       axios
         .get(`${BASE_URL}discover/movie`, {
@@ -218,34 +234,42 @@ export default {
           this.$router.push(
             `/movies?year=${this.year}&genreId=${this.genreId}&page=${page}`
           );
+          this.isLoading = false;
           // this.totalPages = 10;
           // console.log(this.movies);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          this.isLoading = false;
+          console.log(error);
+        });
     },
     filterMoviesByMovieName(movieName, page) {
-      // console.log({ movieName, page });
-      if (this.filterType === "byYearAndGenre") {
-        this.currentPage = 1;
-      }
+      this.isLoading = true;
+      this.currentPage = this.filterType === "byYearAndGenre" ? 1 : page;
       this.filterType = "byMovieName";
       axios
         .get(`${BASE_URL}search/movie`, {
           params: {
             api_key: process.env.VUE_APP_apiKey,
             query: movieName,
-            page,
+            page: this.currentPage,
           },
         })
         .then((response) => {
+          this.isLoading = false;
           const { data } = response;
           this.movies = data.results;
           this.totalPages = data.total_pages;
           // this.totalPages = 10;
           // this.clickCallback(1);
-          this.$router.push(`movies?keyword=${this.keyword}&page=${page}`);
+          this.$router.push(
+            `movies?keyword=${this.keyword}&page=${this.currentPage}`
+          );
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          this.isLoading = false;
+          console.log(error);
+        });
     },
     afterClickMore(data) {
       this.item = data;
@@ -254,14 +278,18 @@ export default {
       this.currentFormat = format;
       console.log(this.currentFormat);
     },
-    afterOnRateStyle(itemId) {
-      this.currentRatedMovie = { id: itemId };
-    },
   },
 };
 </script>
 
 <style scoped>
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
 /* header */
 select,
 option {

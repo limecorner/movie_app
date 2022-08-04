@@ -26,8 +26,6 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 /* add icons to the library */
 library.add(fas, far)
-
-
 /* add font awesome icon component */
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
