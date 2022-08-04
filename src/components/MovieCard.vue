@@ -21,7 +21,14 @@
             </div>
 
             <!-- rate -->
-            <div class="col-1">
+            <div class="col-1" v-if="isRated">
+              <font-awesome-icon
+                icon="fa-solid fa-star"
+                class="rate-star rated"
+                @click="deleteRate(item)"
+              />
+            </div>
+            <div class="col-1" v-else>
               <font-awesome-icon
                 icon="fa-regular fa-star"
                 class="rate-star"
@@ -37,6 +44,7 @@
               </div>
               <input
                 :class="{ rating: currentRatedMovie.id === item.id }"
+                v-rate-focus="currentRatedMovie.id === item.id"
                 @keyup.esc="removeRateStyle"
                 @blur="removeRateStyle"
                 @keyup.enter="rateMovie(item)"
@@ -76,6 +84,7 @@
 <script>
 import axios from "axios";
 import { clickMoreMethod, getInfoMixins } from "./../utils/mixins";
+import { Toast } from "../utils/helpers";
 const BASE_URL = "https://api.themoviedb.org/3/";
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -99,10 +108,20 @@ export default {
       isFavorite: false,
       rate: -1,
       currentRate: -1,
+      rateLimitArray: [],
+      isRated: false,
     };
   },
   created() {
     this.getAccountStates(this.item);
+    this.initializeRateLimitArray();
+  },
+  directives: {
+    "rate-focus": function (el, binding) {
+      if (binding.value) {
+        el.focus();
+      }
+    },
   },
   methods: {
     onToggleFavorite(item) {
@@ -120,6 +139,13 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    initializeRateLimitArray() {
+      let i = 0.5;
+      while (i <= 10) {
+        this.rateLimitArray.push(i);
+        i += 0.5;
+      }
+    },
     onRateStyle(item) {
       this.$emit("after-on-rate-style", item.id);
       this.currentRate = this.rate;
@@ -130,6 +156,16 @@ export default {
       this.currentRate = -1;
     },
     rateMovie(item) {
+      if (!this.rateLimitArray.includes(Number(this.rate))) {
+        Toast.fire({
+          icon: "warning",
+          title: "輸入數字需為",
+          text: "0.5, 1, 1.5,..., 9.5, 10 ",
+          width: 280,
+        });
+        return;
+      }
+
       this.$emit("after-on-rate-style", -1);
       const path = `movie/${item.id}/rating`;
       const data = {
@@ -144,13 +180,41 @@ export default {
       axiosInstance
         .post(path, data, config)
         .then((response) => {
+          this.isRated = true;
           this.rate = data.value;
           console.log(response);
+          Toast.fire({
+            icon: "success",
+            title: "評分成功",
+            width: 200,
+          });
         })
         .catch((error) => {
           this.rate = this.currentRate;
+          Toast.fire({
+            icon: "error",
+            title: "輸入有誤",
+            // text: "0.5, 1, 1.5,..., 9.5, 10 ",
+            width: 280,
+          });
           console.log(error);
         });
+    },
+    deleteRate(item) {
+      const path = `${BASE_URL}movie/${item.id}/rating`;
+      const config = {
+        params: {
+          api_key: process.env.VUE_APP_apiKey,
+          session_id: process.env.VUE_APP_session_id,
+        },
+      };
+      axios
+        .delete(path, config)
+        .then(() => {
+          this.isRated = false;
+          this.rate = -1;
+        })
+        .catch((error) => console.log(error));
     },
     getAccountStates(item) {
       const path = `${BASE_URL}movie/${item.id}/account_states`;
@@ -166,6 +230,7 @@ export default {
           const { data } = response;
           this.isFavorite = data.favorite;
           if (data.rated.value > 0) {
+            this.isRated = true;
             this.rate = data.rated.value;
           }
         })
@@ -226,6 +291,9 @@ export default {
 
 .rate-area.rating {
   display: block;
+}
+.rated {
+  color: #87ceeb;
 }
 
 .card-footer {

@@ -10,4 +10,4 @@ git init
 git add -A
 git commit -m 'deploy'
 
-git push https://github.com/limecorner/movie_app.git master:gh-pages-v7
+git push https://github.com/limecorner/movie_app.git master:v8_rate-by-number
