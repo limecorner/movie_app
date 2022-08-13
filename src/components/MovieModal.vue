@@ -12,10 +12,10 @@
       <div class="modal-content">
         <div class="modal-body" id="show-movie-body">
           <div class="row">
-            <div class="col-6">
+            <div class="col-sm-6 img-part">
               <img :src="getPoster" id="show-movie-image" />
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <h5 class="modal-title" id="show-movie-title">
                 {{ getTitle }}
               </h5>
@@ -28,7 +28,7 @@
               </div>
 
               <div class="row mt-3">
-                <div class="col-4">
+                <div class="col-12 col-lg-4">
                   <div class="text-center">
                     <font-awesome-icon icon="fa-solid fa-ranking-star" />
                     {{ getPopularity }}
@@ -38,7 +38,7 @@
                     {{ getVote }}
                   </div>
                 </div>
-                <div class="col-8">
+                <div id="money-area" class="col-12 col-lg-8">
                   <div>
                     <p class="text-center m-0">
                       預算
@@ -103,5 +103,21 @@ export default {
 .overview-title {
   font-size: 24px;
   font-weight: 800;
+}
+.img-part {
+  display: none;
+}
+#money-area {
+  margin-top: 10px;
+}
+@media screen and (min-width: 576px) {
+  .img-part {
+    display: block;
+  }
+}
+@media screen and (min-width: 992px) {
+  #money-area {
+    margin-top: 0;
+  }
 }
 </style>

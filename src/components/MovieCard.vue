@@ -216,7 +216,9 @@ export default {
             this.rateInStar = data.rated.value / 2;
           }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
@@ -276,6 +278,9 @@ export default {
 }
 .rated {
   color: #87ceeb;
+}
+.rated:hover {
+  color: #ddd;
 }
 
 .card-footer {

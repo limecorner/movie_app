@@ -223,6 +223,7 @@ export default {
     },
     filterMovies(page, year, genreId) {
       this.isLoading = true;
+      this.keyword = "";
       console.log({ page, year, genreId });
       axios
         .get(`${BASE_URL}discover/movie`, {
@@ -255,6 +256,10 @@ export default {
       this.isLoading = true;
       this.currentPage = this.filterType === "byYearAndGenre" ? 1 : page;
       this.filterType = "byMovieName";
+      document.querySelector("#year-area").value = "";
+      document.querySelector("#genre-area").value = "";
+      this.year = "";
+      this.genreId = "";
       axios
         .get(`${BASE_URL}search/movie`, {
           params: {
@@ -316,10 +321,6 @@ option {
   margin-bottom: 10px;
 }
 
-#search-form {
-  /* width: 90%; */
-}
-
 .fa-solid {
   width: 40px;
 }
@@ -355,7 +356,6 @@ tr {
 .pagination {
   justify-content: center;
   margin-top: 20px;
-  /* width: 500px; */
 }
 @media screen and (min-width: 576px) {
   #search-form,

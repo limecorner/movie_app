@@ -9,8 +9,12 @@
     </div>
 
     <template v-else>
-      <div class="container mt-5" v-if="currentFormat === 'card-format'">
-        <div class="row" id="data-panel">
+      <div class="container mt-5">
+        <div v-if="totalResults === 0">
+          <p>目前沒有評分過的電影，請回到首頁評分電影</p>
+          <router-link class="tab" to="/movies">回首頁</router-link>
+        </div>
+        <div class="row" id="data-panel" v-else>
           <MovieCard
             v-for="movie in movies"
             :key="movie.id"
@@ -46,7 +50,7 @@ export default {
       isLoading: true,
       movies: [],
       item: {}, // for modal
-      currentFormat: "card-format",
+      totalResults: 0,
     };
   },
   created() {
@@ -69,6 +73,7 @@ export default {
           this.isLoading = false;
           const { data } = response;
           this.movies = data.results;
+          this.totalResults = data.total_results;
         })
         .catch((error) => {
           this.isLoading = false;
