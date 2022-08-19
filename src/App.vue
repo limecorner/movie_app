@@ -3,6 +3,7 @@
     <nav class="nav-container mt-4">
       <div class="row">
         <div class="col-3">
+          <h5 class="web-title-mobile">速</h5>
           <h5 class="web-title">速查電影</h5>
         </div>
         <div class="col-3">
@@ -36,7 +37,11 @@ html {
   justify-content: space-around;
   align-items: center;
 }
+.web-title-mobile {
+  font-size: 26px;
+}
 .web-title {
+  display: none;
   font-size: 18px;
 }
 .tab {
@@ -55,7 +60,11 @@ html {
 }
 
 @media screen and (min-width: 576px) {
+  .web-title-mobile {
+    display: none;
+  }
   .web-title {
+    display: block;
     font-size: 22px;
   }
   .tab {

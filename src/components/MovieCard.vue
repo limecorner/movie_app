@@ -1,7 +1,9 @@
 <template>
   <div class="card-container col-6 col-md-4 col-lg-3 col-xl-2">
     <div class="card mb-2">
-      <img class="card-img-top" :src="getPoster" alt="Card image cap" />
+      <div class="img-wrapper">
+        <img class="card-img-top" :src="getPoster" alt="Card image cap" />
+      </div>
       <div class="card-body movie-item-body">
         <h5>{{ getTitle }}</h5>
         <div class="container">
@@ -227,6 +229,14 @@ export default {
 <style scoped>
 .card-container {
   padding: 0 10px;
+}
+.img-wrapper {
+  width: 100%;
+  height: 300px;
+  background-color: #cdcdcd;
+}
+.card-img-top {
+  height: 100%;
 }
 .card-img-top:hover {
   z-index: 10;

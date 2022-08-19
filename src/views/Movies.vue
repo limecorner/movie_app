@@ -1,9 +1,14 @@
 <template>
   <div>
+    <button id="myBtn" @click="topFunction">Top</button>
     <div class="container mt-3">
       <div class="select-wrapper row">
         <div class="col-12 col-sm-6 col-md-4">
-          <select id="year-area" @change="changeQuery($event)">
+          <select
+            id="year-area"
+            :class="{ 'filter-type': filterType === 'byYearAndGenre' }"
+            @change="changeQuery($event)"
+          >
             <option value="" selected>年份</option>
             <option v-for="year in years" :key="year" :value="year">
               {{ year }}
@@ -11,7 +16,11 @@
           </select>
         </div>
         <div class="col-12 col-sm-6 col-md-4">
-          <select id="genre-area" @change="changeQuery($event)">
+          <select
+            id="genre-area"
+            :class="{ 'filter-type': filterType === 'byYearAndGenre' }"
+            @change="changeQuery($event)"
+          >
             <option value="" selected>類型</option>
             <option v-for="genre in genres" :key="genre.id" :value="genre.id">
               {{ genre.name }}
@@ -177,6 +186,7 @@ export default {
     this.initilaizeYears(2010);
     this.getGenres();
     this.filterMovies(1, this.year, this.genreId);
+    window.onscroll = this.scrollFunction;
   },
   methods: {
     getGenres() {
@@ -291,6 +301,20 @@ export default {
       this.currentFormat = format;
       console.log(this.currentFormat);
     },
+    scrollFunction() {
+      if (
+        document.body.scrollTop > 200 ||
+        document.documentElement.scrollTop > 200
+      ) {
+        document.getElementById("myBtn").style.display = "block";
+      } else {
+        document.getElementById("myBtn").style.display = "none";
+      }
+    },
+    topFunction() {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    },
   },
 };
 </script>
@@ -314,11 +338,18 @@ option {
   text-align: center;
   border-radius: 5px;
 }
+
+#year-area.filter-type,
+#genre-area.filter-type {
+  background-color: #87ceeb;
+}
+
 #year-area,
 #genre-area,
 #search-form {
   width: 80%;
   margin-bottom: 10px;
+  background-color: white;
 }
 
 .fa-solid {
@@ -357,6 +388,24 @@ tr {
   justify-content: center;
   margin-top: 20px;
 }
+#myBtn {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  bottom: 30px;
+  right: 30px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: white;
+  opacity: 0.7;
+  cursor: pointer;
+  color: #87ceeb;
+}
+#myBtn:hover {
+  opacity: 1;
+  color: blue;
+}
+
 @media screen and (min-width: 576px) {
   #search-form,
   #control-form {

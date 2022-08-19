@@ -8,6 +8,6 @@ npm run build
 cd dist
 git init
 git add -A
-git commit -m 'deploy : 加入 Spinner + RWD'
+git commit -m 'deploy : 1. 未載入圖片時用背景色 2. Go Top'
 
-git push https://github.com/limecorner/movie_app.git master:movie_app_v10
+git push https://github.com/limecorner/movie_app.git master:movie_app_v11
