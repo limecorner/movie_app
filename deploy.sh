@@ -8,6 +8,6 @@ npm run build
 cd dist
 git init
 git add -A
-git commit -m 'deploy : 1. 未載入圖片時用背景色 2. Go Top'
+git commit -m 'deploy : 用年分、類型查詢 : 新增上(下)一頁功能'
 
-git push https://github.com/limecorner/movie_app.git master:movie_app_v11
+git push https://github.com/limecorner/movie_app.git master:movie_app_v13

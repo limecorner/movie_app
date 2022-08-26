@@ -130,6 +130,7 @@
     </template>
 
     <paginate
+      v-model="currentPage"
       :page-count="totalPages"
       :page-range="3"
       :margin-pages="2"
@@ -141,7 +142,6 @@
       :page-link-class="'page-link'"
       :prev-class="'page-link'"
       :next-class="'page-link'"
-      :force-page="currentPage"
     >
     </paginate>
 
@@ -182,6 +182,35 @@ export default {
       filterType: "byYearAndGenre",
     };
   },
+  computed: {
+    queryPage() {
+      return Number(this.$route.query.page);
+    },
+    queryYear() {
+      const year = this.$route.query.year;
+      return year ? Number(year) : "";
+    },
+    queryGenre() {
+      const genreId = this.$route.query.genreId;
+      return genreId ? Number(genreId) : "";
+    },
+  },
+  watch: {
+    queryPage: function (val) {
+      this.currentPage = Number(val);
+      this.filterMovies(this.currentPage, this.year, this.genreId);
+    },
+    queryYear: function (val) {
+      this.year = val ? Number(val) : "";
+      document.querySelector("#year-area").value = val;
+      this.filterMovies(this.currentPage, this.year, this.genreId);
+    },
+    queryGenre: function (val) {
+      this.genreId = val ? Number(val) : "";
+      document.querySelector("#genre-area").value = this.genreId;
+      this.filterMovies(this.currentPage, this.year, this.genreId);
+    },
+  },
   created() {
     this.initilaizeYears(2010);
     this.getGenres();
@@ -208,7 +237,7 @@ export default {
         });
     },
     clickCallback(pageNum) {
-      console.log(pageNum);
+      console.log("pageNum", pageNum);
       this.currentPage = pageNum;
       if (this.filterType === "byYearAndGenre") {
         this.filterMovies(pageNum, this.year, this.genreId);
@@ -250,9 +279,10 @@ export default {
           const { data } = response;
           this.movies = data.results;
           this.totalPages = data.total_pages;
-          this.$router.push(
-            `/movies?year=${this.year}&genreId=${this.genreId}&page=${page}`
-          );
+          this.$router.push({
+            name: "movies",
+            query: { year, genreId, page },
+          });
           this.isLoading = false;
           // this.totalPages = 10;
           // console.log(this.movies);
