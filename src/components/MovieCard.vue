@@ -100,6 +100,12 @@ export default {
     this.getAccountStates(this.item);
   },
   methods: {
+    newAbortSignal(timeout) {
+      const abortController = new AbortController();
+      setTimeout(() => abortController.abort(), timeout || 0);
+
+      return abortController.signal;
+    },
     onToggleFavorite(item) {
       const path = `${BASE_URL}account/${process.env.VUE_APP_account_id}/favorite?api_key=${process.env.VUE_APP_apiKey}&session_id=${process.env.VUE_APP_session_id}`;
       const data = {
@@ -108,7 +114,7 @@ export default {
         favorite: !this.isFavorite,
       };
       axiosInstance
-        .post(path, data)
+        .post(path, data, { signal: this.newAbortSignal(50) })
         .then((response) => {
           this.isFavorite = data.favorite;
           if (data.favorite) {
@@ -128,7 +134,15 @@ export default {
           }
           console.log(response);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          Toast.fire({
+            icon: "error",
+            title: error.name,
+            text: error.message,
+            width: 300,
+          });
+        });
     },
     setRating(rating) {
       console.log("rating", rating);
