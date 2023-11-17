@@ -70,13 +70,9 @@
 <script>
 import axios from "axios";
 import { clickMoreMethod, getInfoMixins } from "./../utils/mixins";
-import { Toast } from "../utils/helpers";
+import { Toast, axiosInstance } from "../utils/helpers";
 import StarRating from "vue-star-rating";
 const BASE_URL = "https://api.themoviedb.org/3/";
-const axiosInstance = axios.create({
-  baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json;charset=utf-8" },
-});
 
 export default {
   components: {
@@ -101,14 +97,20 @@ export default {
   },
   methods: {
     onToggleFavorite(item) {
-      const path = `${BASE_URL}account/${process.env.VUE_APP_account_id}/favorite?api_key=${process.env.VUE_APP_apiKey}&session_id=${process.env.VUE_APP_session_id}`;
+      const path = `account/${process.env.VUE_APP_account_id}/favorite`;
       const data = {
         media_type: "movie",
         media_id: item.id,
         favorite: !this.isFavorite,
       };
+      const config = {
+        params: {
+          api_key: process.env.VUE_APP_apiKey,
+          session_id: process.env.VUE_APP_session_id,
+        },
+      };
       axiosInstance
-        .post(path, data)
+        .post(path, data, config)
         .then((response) => {
           this.isFavorite = data.favorite;
           if (data.favorite) {
@@ -170,14 +172,14 @@ export default {
     },
     deleteRate(item) {
       this.rateInStar = 0;
-      const path = `${BASE_URL}movie/${item.id}/rating`;
+      const path = `movie/${item.id}/rating`;
       const config = {
         params: {
           api_key: process.env.VUE_APP_apiKey,
           session_id: process.env.VUE_APP_session_id,
         },
       };
-      axios
+      axiosInstance
         .delete(path, config)
         .then(() => {
           this.isRated = false;
