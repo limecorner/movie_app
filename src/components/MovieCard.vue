@@ -12,12 +12,15 @@
               v-if="isFavorite"
               @click="onToggleFavorite(item)"
               icon="fa-solid fa-heart"
-              class="favorite"
+              :class="[redHeartClass]"
+              :style="{ cursor: favoriteLoading ? 'auto' : '' }"
             />
             <font-awesome-icon
               v-else
               @click="onToggleFavorite(item)"
               icon="fa-solid fa-heart"
+              :class="[favoriteLoading ? 'favorite-loading' : '']"
+              :style="{ cursor: favoriteLoading ? 'auto' : '' }"
             />
 
             <!-- rate -->
@@ -88,6 +91,7 @@ export default {
   data() {
     return {
       isFavorite: false,
+      favoriteLoading: false,
       rateInStar: -1,
       isRated: false,
     };
@@ -97,6 +101,7 @@ export default {
   },
   methods: {
     onToggleFavorite(item) {
+      this.favoriteLoading = true;
       const path = `account/${process.env.VUE_APP_account_id}/favorite`;
       const data = {
         media_type: "movie",
@@ -113,6 +118,8 @@ export default {
         .post(path, data, config)
         .then((response) => {
           this.isFavorite = data.favorite;
+          this.favoriteLoading = false;
+
           if (data.favorite) {
             Toast.fire({
               icon: "success",
@@ -130,7 +137,10 @@ export default {
           }
           console.log(response);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          this.favoriteLoading = false;
+          console.log(error);
+        });
     },
     setRating(rating) {
       console.log("rating", rating);
@@ -225,6 +235,11 @@ export default {
         });
     },
   },
+  computed: {
+    redHeartClass: function () {
+      return this.favoriteLoading ? "favorite-loading" : "favorite";
+    },
+  },
 };
 </script>
 
@@ -266,12 +281,16 @@ export default {
   -webkit-line-clamp: 1;
 }
 
+.cursor-pointer,
 .fa-heart,
 .rate-star {
   cursor: pointer;
 }
 .favorite {
   color: red;
+}
+.favorite-loading {
+  color: pink;
 }
 .rate-text {
   display: block;
