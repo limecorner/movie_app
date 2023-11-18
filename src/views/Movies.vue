@@ -246,7 +246,8 @@ export default {
       }
     },
     initilaizeYears(theLastYear) {
-      for (let year = 2022; year >= theLastYear; year--) {
+      const currentYear = new Date().getFullYear();
+      for (let year = currentYear; year >= theLastYear; year--) {
         this.years.push(year);
       }
     },
