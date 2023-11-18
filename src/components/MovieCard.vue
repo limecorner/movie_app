@@ -75,6 +75,7 @@ import axios from "axios";
 import { clickMoreMethod, getInfoMixins } from "./../utils/mixins";
 import { Toast, axiosInstance } from "../utils/helpers";
 import StarRating from "vue-star-rating";
+import { toggleFavorite } from "../api/movie";
 const BASE_URL = "https://api.themoviedb.org/3/";
 
 export default {
@@ -100,47 +101,36 @@ export default {
     this.getAccountStates(this.item);
   },
   methods: {
-    onToggleFavorite(item) {
-      this.favoriteLoading = true;
-      const path = `account/${process.env.VUE_APP_account_id}/favorite`;
-      const data = {
-        media_type: "movie",
-        media_id: item.id,
-        favorite: !this.isFavorite,
-      };
-      const config = {
-        params: {
-          api_key: process.env.VUE_APP_apiKey,
-          session_id: process.env.VUE_APP_session_id,
-        },
-      };
-      axiosInstance
-        .post(path, data, config)
-        .then((response) => {
-          this.isFavorite = data.favorite;
-          this.favoriteLoading = false;
-
-          if (data.favorite) {
-            Toast.fire({
-              icon: "success",
-              title: "成功",
-              text: "加到最愛",
-              width: 200,
-            });
-          } else {
-            Toast.fire({
-              icon: "success",
-              title: "成功",
-              text: "移除最愛",
-              width: 200,
-            });
-          }
-          console.log(response);
-        })
-        .catch((error) => {
-          this.favoriteLoading = false;
-          console.log(error);
+    async onToggleFavorite(item) {
+      try {
+        this.favoriteLoading = true;
+        const { data } = await toggleFavorite(item, !this.isFavorite);
+        this.favoriteLoading = false;
+        this.isFavorite = !this.isFavorite;
+        if (data.status_message === "Success.") {
+          Toast.fire({
+            icon: "success",
+            title: "成功",
+            text: "加到最愛",
+            width: 200,
+          });
+        } else {
+          Toast.fire({
+            icon: "success",
+            title: "成功",
+            text: "移除最愛",
+            width: 200,
+          });
+        }
+      } catch (error) {
+        this.favoriteLoading = false;
+        Toast.fire({
+          icon: "error",
+          title: "失敗",
+          text: error.response.data.status_message,
+          width: 400,
         });
+      }
     },
     setRating(rating) {
       console.log("rating", rating);
