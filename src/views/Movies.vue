@@ -120,6 +120,8 @@
     <Pagination
       :currentPage="currentPage"
       :totalPages="totalPages"
+      :year="year"
+      :genreId="genreId"
       :filterType="filterType"
       @filter-movies="filterMovies"
     />

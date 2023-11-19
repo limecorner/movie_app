@@ -32,6 +32,14 @@ export default {
       type: Number,
       required: true,
     },
+    year: {
+      type: [Number, String],
+      required: true,
+    },
+    genreId: {
+      type: [Number, String],
+      required: true,
+    },
     filterType: {
       type: String,
       required: true,
@@ -42,13 +50,13 @@ export default {
       childCurrentPage: this.currentPage,
     };
   },
-  mounted() {
-    this.clickCallback(1, this.year, this.genreId);
-  },
+  // mounted() {
+  //   this.clickCallback(1, this.year, this.genreId);
+  // },
   methods: {
     clickCallback(pageNum) {
       console.log("pageNum", pageNum);
-      this.$emit("filter-movies", pageNum);
+      this.$emit("filter-movies", pageNum, this.year, this.genreId);
       // this.$emit("filter-movies", pageNum, 2000, 28);
     },
   },
