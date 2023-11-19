@@ -47,13 +47,7 @@
           </form>
         </div>
         <div
-          class="
-            icon-wrapper
-            col-6 col-sm-2
-            d-flex
-            align-items-center
-            justify-content-center
-          "
+          class="icon-wrapper col-6 col-sm-2 d-flex align-items-center justify-content-center"
         >
           <font-awesome-icon
             class="mr-3"
@@ -63,13 +57,7 @@
           />
         </div>
         <div
-          class="
-            icon-wrapper
-            col-6 col-sm-2
-            d-flex
-            align-items-center
-            justify-content-center
-          "
+          class="icon-wrapper col-6 col-sm-2 d-flex align-items-center justify-content-center"
         >
           <font-awesome-icon
             icon="fa-solid fa-list"
