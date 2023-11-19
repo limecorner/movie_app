@@ -117,22 +117,12 @@
       </div>
     </template>
 
-    <paginate
-      v-model="currentPage"
-      :page-count="totalPages"
-      :page-range="3"
-      :margin-pages="2"
-      :click-handler="clickCallback"
-      :prev-text="'Prev'"
-      :next-text="'Next'"
-      :container-class="'pagination'"
-      :page-class="'page-item'"
-      :page-link-class="'page-link'"
-      :prev-class="'page-link'"
-      :next-class="'page-link'"
-    >
-    </paginate>
-
+    <Pagination
+      :currentPage="currentPage"
+      :totalPages="totalPages"
+      :filterType="filterType"
+      @after-filter-movies="afterFilterMovies"
+    />
     <!-- Modal -->
     <MovieModal :item="item" />
   </div>
@@ -143,6 +133,7 @@ import axios from "axios";
 import MovieCard from "./../components/MovieCard.vue";
 import MovieList from "./../components/MovieList.vue";
 import MovieModal from "./../components/MovieModal.vue";
+import Pagination from "./../components/Pagination";
 import { BreedingRhombusSpinner } from "epic-spinners";
 
 const BASE_URL = "https://api.themoviedb.org/3/";
@@ -153,6 +144,7 @@ export default {
     MovieCard,
     MovieList,
     MovieModal,
+    Pagination,
   },
   data() {
     return {
@@ -186,7 +178,7 @@ export default {
   watch: {
     queryPage: function (val) {
       this.currentPage = Number(val);
-      this.filterMovies(this.currentPage, this.year, this.genreId);
+      // this.filterMovies(this.currentPage, this.year, this.genreId);
     },
     queryYear: function (val) {
       this.year = val ? Number(val) : "";
@@ -224,15 +216,15 @@ export default {
           console.log(error);
         });
     },
-    clickCallback(pageNum) {
-      console.log("pageNum", pageNum);
-      this.currentPage = pageNum;
-      if (this.filterType === "byYearAndGenre") {
-        this.filterMovies(pageNum, this.year, this.genreId);
-      } else {
-        this.filterMoviesByMovieName(this.keyword, pageNum);
-      }
-    },
+    // clickCallback(pageNum) {
+    //   console.log("pageNum", pageNum);
+    //   this.currentPage = pageNum;
+    //   if (this.filterType === "byYearAndGenre") {
+    //     this.filterMovies(pageNum, this.year, this.genreId);
+    //   } else {
+    //     this.filterMoviesByMovieName(this.keyword, pageNum);
+    //   }
+    // },
     initilaizeYears(theLastYear) {
       const currentYear = new Date().getFullYear();
       for (let year = currentYear; year >= theLastYear; year--) {
@@ -267,6 +259,7 @@ export default {
         .then((response) => {
           const { data } = response;
           this.movies = data.results;
+          this.currentPage = page;
           this.totalPages = data.total_pages;
           this.$router.push({
             name: "movies",
@@ -315,6 +308,9 @@ export default {
     },
     afterClickMore(data) {
       this.item = data;
+    },
+    afterFilterMovies(results) {
+      this.movies = [...results];
     },
     changeFormat(format) {
       this.currentFormat = format;
