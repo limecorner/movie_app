@@ -121,7 +121,7 @@
       :currentPage="currentPage"
       :totalPages="totalPages"
       :filterType="filterType"
-      @after-filter-movies="afterFilterMovies"
+      @filter-movies="filterMovies"
     />
     <!-- Modal -->
     <MovieModal :item="item" />
@@ -133,7 +133,7 @@ import axios from "axios";
 import MovieCard from "./../components/MovieCard.vue";
 import MovieList from "./../components/MovieList.vue";
 import MovieModal from "./../components/MovieModal.vue";
-import Pagination from "./../components/Pagination";
+import Pagination from "@/components/Pagination.vue";
 import { BreedingRhombusSpinner } from "epic-spinners";
 
 const BASE_URL = "https://api.themoviedb.org/3/";
@@ -308,9 +308,6 @@ export default {
     },
     afterClickMore(data) {
       this.item = data;
-    },
-    afterFilterMovies(results) {
-      this.movies = [...results];
     },
     changeFormat(format) {
       this.currentFormat = format;
