@@ -60,6 +60,18 @@ export default {
       // this.$emit("filter-movies", pageNum, 2000, 28);
     },
   },
+  watch: {
+    year: function (newVal) {
+      console.log("子元件 watch year", newVal);
+      this.childCurrentPage = 1;
+      this.$emit("filter-movies", this.childCurrentPage, newVal, this.genreId);
+    },
+    genreId: function (newVal) {
+      console.log("子元件 watch genreId", newVal);
+      this.childCurrentPage = 1;
+      this.$emit("filter-movies", this.childCurrentPage, this.year, newVal);
+    },
+  },
 };
 </script>
 

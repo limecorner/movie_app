@@ -7,7 +7,7 @@
           <select
             id="year-area"
             :class="{ 'filter-type': filterType === 'byYearAndGenre' }"
-            @change="changeQuery($event)"
+            v-model="year"
           >
             <option value="" selected>年份</option>
             <option v-for="year in years" :key="year" :value="year">
@@ -19,7 +19,7 @@
           <select
             id="genre-area"
             :class="{ 'filter-type': filterType === 'byYearAndGenre' }"
-            @change="changeQuery($event)"
+            v-model="genreId"
           >
             <option value="" selected>類型</option>
             <option v-for="genre in genres" :key="genre.id" :value="genre.id">
@@ -168,29 +168,11 @@ export default {
     queryPage() {
       return Number(this.$route.query.page);
     },
-    queryYear() {
-      const year = this.$route.query.year;
-      return year ? Number(year) : "";
-    },
-    queryGenre() {
-      const genreId = this.$route.query.genreId;
-      return genreId ? Number(genreId) : "";
-    },
   },
   watch: {
     queryPage: function (val) {
       this.currentPage = Number(val);
       // this.filterMovies(this.currentPage, this.year, this.genreId);
-    },
-    queryYear: function (val) {
-      this.year = val ? Number(val) : "";
-      document.querySelector("#year-area").value = val;
-      this.filterMovies(this.currentPage, this.year, this.genreId);
-    },
-    queryGenre: function (val) {
-      this.genreId = val ? Number(val) : "";
-      document.querySelector("#genre-area").value = this.genreId;
-      this.filterMovies(this.currentPage, this.year, this.genreId);
     },
   },
   created() {
@@ -233,16 +215,6 @@ export default {
         this.years.push(year);
       }
     },
-    changeQuery(e) {
-      if (e.target.id === "year-area") {
-        this.year = e.target.value;
-      } else {
-        this.genreId = e.target.value;
-      }
-      this.filterType = "byYearAndGenre";
-      this.currentPage = 1;
-      this.filterMovies(this.currentPage, this.year, this.genreId);
-    },
     filterMovies(page, year, genreId) {
       this.isLoading = true;
       this.keyword = "";
@@ -264,7 +236,7 @@ export default {
           this.currentPage = page;
           this.totalPages = data.total_pages;
           this.$router.push({
-            name: "movies",
+            path: "movies",
             query: { year, genreId, page },
           });
           this.isLoading = false;
