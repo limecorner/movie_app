@@ -8,6 +8,7 @@
             id="year-area"
             :class="{ 'filter-type': filterType === 'byYearAndGenre' }"
             v-model="year"
+            @change="filterType = 'byYearAndGenre'"
           >
             <option value="" selected>年份</option>
             <option v-for="year in years" :key="year" :value="year">
@@ -20,6 +21,7 @@
             id="genre-area"
             :class="{ 'filter-type': filterType === 'byYearAndGenre' }"
             v-model="genreId"
+            @change="filterType = 'byYearAndGenre'"
           >
             <option value="" selected>類型</option>
             <option v-for="genre in genres" :key="genre.id" :value="genre.id">
@@ -38,7 +40,10 @@
               v-model="keyword"
             />
             <button
-              @click.prevent="filterMoviesByMovieName(keyword, 1)"
+              @click.prevent="
+                currentPage = 1;
+                clickMagnifyingGlassTimes++;
+              "
               class="btn btn-outline-success"
               type="submit"
             >
@@ -67,6 +72,18 @@
         </div>
       </div>
     </div>
+
+    <Pagination
+      :currentPage="currentPage"
+      :totalPages="totalPages"
+      :year="year"
+      :genreId="genreId"
+      :keyword="keyword"
+      :clickMagnifyingGlassTimes="clickMagnifyingGlassTimes"
+      :filterType="filterType"
+      @filter-movies="filterMovies"
+      @filter-movies-by-movie-name="filterMoviesByMovieName"
+    />
 
     <div v-if="isLoading" class="spinner-wrapper">
       <breeding-rhombus-spinner
@@ -117,14 +134,15 @@
       </div>
     </template>
 
-    <Pagination
+    <!-- <Pagination
       :currentPage="currentPage"
       :totalPages="totalPages"
       :year="year"
       :genreId="genreId"
       :filterType="filterType"
       @filter-movies="filterMovies"
-    />
+      @filter-movies-by-movie-name="filterMoviesByMovieName"
+    /> -->
     <!-- Modal -->
     <MovieModal :item="item" />
   </div>
@@ -161,6 +179,7 @@ export default {
       totalPages: 3,
       currentFormat: "card-format",
       keyword: "",
+      clickMagnifyingGlassTimes: 0, // 只是為了讓子元件 watch
       filterType: "byYearAndGenre",
     };
   },

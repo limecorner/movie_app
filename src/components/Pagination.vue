@@ -36,6 +36,14 @@ export default {
       type: [Number, String],
       required: true,
     },
+    keyword: {
+      type: String,
+      required: true,
+    },
+    clickMagnifyingGlassTimes: {
+      type: Number,
+      required: true,
+    },
     genreId: {
       type: [Number, String],
       required: true,
@@ -56,7 +64,12 @@ export default {
   methods: {
     clickCallback(pageNum) {
       console.log("pageNum", pageNum);
-      this.$emit("filter-movies", pageNum, this.year, this.genreId);
+      if (this.filterType === "byYearAndGenre") {
+        this.$emit("filter-movies", pageNum, this.year, this.genreId);
+      } else {
+        this.$emit("filter-movies-by-movie-name", this.keyword, pageNum);
+      }
+      // this.$emit("filter-movies", pageNum, this.year, this.genreId);
       // this.$emit("filter-movies", pageNum, 2000, 28);
     },
   },
@@ -70,6 +83,15 @@ export default {
       console.log("子元件 watch genreId", newVal);
       this.childCurrentPage = 1;
       this.$emit("filter-movies", this.childCurrentPage, this.year, newVal);
+    },
+    clickMagnifyingGlassTimes: function (newVal) {
+      console.log("子元件 watch clickMagnifyingGlassTimes", newVal);
+      this.childCurrentPage = 1;
+      this.$emit(
+        "filter-movies-by-movie-name",
+        this.keyword,
+        this.childCurrentPage
+      );
     },
   },
 };
