@@ -19,11 +19,16 @@ VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch((err) => err)
 }
 
+import ElementUI from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+
 Vue.component('paginate', Paginate)
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(ElementUI);
+
 /* add icons to the library */
 library.add(fas, far)
 /* add font awesome icon component */

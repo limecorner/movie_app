@@ -118,10 +118,10 @@
     </template>
 
     <Pagination
-      :currentPage="currentPage"
-      :totalPages="totalPages"
+      :current-page="currentPage"
+      :page-count="totalPages"
       :filterType="filterType"
-      @after-filter-movies="afterFilterMovies"
+      @after-filter-movies="filterMovies"
     />
     <!-- Modal -->
     <MovieModal :item="item" />
